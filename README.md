@@ -1,6 +1,6 @@
 # Tercera tarea de APA: Multiplicación de vectores y ortogonalidad
 
-## Nom i cognoms
+## Pol Ramirez Sanchez
 
 > [!Important]
 > Introduzca a continuación su nombre y apellidos:
