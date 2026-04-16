@@ -95,12 +95,154 @@ $v_2$, y $v_1^\perp$ es normal (perpendicular) a $v_2$.
 Inserte a continuación una captura de pantalla que muestre el resultado de ejecutar el
 fichero `algebra/vectores.py` con la opción *verbosa*, de manera que se muestre el
 resultado de la ejecución de los tests unitarios.
+<img width="362" height="414" alt="Captura de pantalla 2026-04-16 a las 12 40 53" src="https://github.com/user-attachments/assets/4c41e229-39fd-47b9-8ed0-42db7a58c0cd" />
 
 #### Código desarrollado
 
 Inserte a continuación el código de los métodos desarrollados en esta tarea, usando los
 comandos necesarios para que se realice el realce sintáctico en Python del mismo (no
 vale insertar una imagen o una captura de pantalla, debe hacerse en formato *markdown*).
+
+```
+"""
+Tercera tarea de APA: Multiplicaciones de vectores y ortogonalidad
+
+Nombre: Pol Ramírez Sánchez
+"""
+
+class Vector:
+    """
+    Clase para representar vectores y operar con ellos.
+    """
+
+    def __init__(self, iterable):
+        """
+        Inicializa el vector a partir de un iterable.
+        """
+        self._data = list(iterable)
+
+    def __repr__(self):
+        """
+        Representación oficial del objeto.
+        """
+        return f"Vector({self._data})"
+
+    def __str__(self):
+        """
+        Representación informal del vector.
+        """
+        return str(self._data)
+
+    def __getitem__(self, index):
+        return self._data[index]
+
+    def __setitem__(self, index, value):
+        self._data[index] = value
+
+    def __len__(self):
+        return len(self._data)
+
+    # ------------------ OPERACIONES ------------------
+
+    def __add__(self, other):
+        """
+        Suma de vectores o suma con escalar.
+        """
+        if isinstance(other, (int, float, complex)):
+            return Vector(x + other for x in self)
+        return Vector(x + y for x, y in zip(self, other))
+
+    __radd__ = __add__
+
+    def __neg__(self):
+        return Vector(-x for x in self)
+
+    def __sub__(self, other):
+        return self + (-other)
+
+    def __rsub__(self, other):
+        return (-self) + other
+
+    def __mul__(self, other):
+        """
+        Producto de Hadamard o multiplicación por escalar.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 * 2
+        Vector([2, 4, 6])
+        >>> v1 * v2
+        Vector([4, 10, 18])
+        """
+        if isinstance(other, (int, float, complex)):
+            return Vector(x * other for x in self)
+        return Vector(x * y for x, y in zip(self, other))
+
+    __rmul__ = __mul__
+
+    def __matmul__(self, other):
+        """
+        Producto escalar entre dos vectores.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 @ v2
+        32
+        """
+        if not isinstance(other, Vector):
+            raise TypeError("Se esperaba un Vector")
+        return sum(x * y for x, y in zip(self, other))
+
+    def __rmatmul__(self, other):
+        if isinstance(other, Vector):
+            return other @ self
+        raise TypeError("Se esperaba un Vector")
+
+    def __floordiv__(self, other):
+        """
+        Componente paralela de un vector respecto a otro.
+
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 // v2
+        Vector([1.0, 2.0, 1.0])
+        """
+        if not isinstance(other, Vector):
+            raise TypeError("Se esperaba un Vector")
+
+        coef = (self @ other) / (other @ other)
+        return Vector(coef * x for x in other)
+
+    def __rfloordiv__(self, other):
+        if isinstance(other, Vector):
+            return self // other
+        raise TypeError("Se esperaba un Vector")
+
+    def __mod__(self, other):
+        """
+        Componente perpendicular de un vector respecto a otro.
+
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 % v2
+        Vector([1.0, -1.0, 1.0])
+        """
+        if not isinstance(other, Vector):
+            raise TypeError("Se esperaba un Vector")
+
+        proy = self // other
+        return Vector(x - y for x, y in zip(self, proy))
+
+    def __rmod__(self, other):
+        if isinstance(other, Vector):
+            return self % other
+        raise TypeError("Se esperaba un Vector")
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+```
 
 #### Subida del resultado al repositorio GitHub y *pull-request*
 
